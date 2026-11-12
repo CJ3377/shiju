@@ -1,5 +1,5 @@
 /* 拾句 — 離線快取。改了程式後把 VERSION 加 1，手機才會抓到新版。 */
-const VERSION = 'shiju-v6';
+const VERSION = 'shiju-v7';
 const FILES = ['./', 'index.html', 'styles.css', 'data.js', 'state.js', 'app.js', 'manifest.webmanifest', 'icon-180.png', 'icon-512.png'];
 
 self.addEventListener('install', e => {

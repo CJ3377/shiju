@@ -14,7 +14,8 @@
 <script>
   // 今日想一想用 Gemini 出題。一般只要在 App 的「設定」貼上金鑰即可，這裡不用改。
   // model：要換模型時改這裡。aiEndpoint：改用 ai-worker.js 中繼服務時才填（見 README 第 6 節）。
-  window.SHIJU_CONFIG = { model: 'gemini-flash-latest', aiEndpoint: '' };
+  // 預設用 Flash Lite：免費額度約每天 500 次（Flash 只有 20 次）。
+  window.SHIJU_CONFIG = { model: 'gemini-3.5-flash-lite', aiEndpoint: '' };
 </script>
 </head>
 <body>

@@ -65,7 +65,34 @@
      金鑰在「設定」填入，只存在這支手機。也可以改用 ai-worker.js 中繼服務（index.html 的 aiEndpoint）。
      同一天、同一句、同一次「換一題」只會問一次 AI，結果會存起來，省下免費額度。 */
   const cfg = () => window.SHIJU_CONFIG || {};
-  const MODEL = () => cfg().model || 'gemini-flash-latest';
+  // 依序嘗試：前一個模型找不到（404）或額度用完（429）就換下一個。Flash Lite 免費額度約每天 500 次
+  const MODELS = () => [...new Set([cfg().model || 'gemini-3.5-flash-lite', 'gemini-3.5-flash-lite', 'gemini-3.1-flash-lite'])];
+  let goodModel = null;
+  function friendlyError(status, msg) {
+    if (status === 429 || /quota|rate.?limit/i.test(msg)) return '今天的免費額度用完了，明天會自動恢復。';
+    if (status === 400 && /api key/i.test(msg)) return '金鑰不正確，請到「設定」重新貼上。';
+    if (status === 403) return '這把金鑰沒有使用 Gemini 的權限，請到 AI Studio 確認。';
+    return msg || ('HTTP ' + status);
+  }
+  async function callGemini(text) {
+    let err;
+    for (const m of [...new Set([goodModel, ...MODELS()].filter(Boolean))]) {
+      const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' + m + ':generateContent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-goog-api-key': S.geminiKey },
+        body: JSON.stringify({ contents: [{ parts: [{ text }] }] })
+      });
+      const j = await res.json().catch(() => ({}));
+      if (res.ok) {
+        goodModel = m;
+        const parts = (j.candidates && j.candidates[0] && j.candidates[0].content && j.candidates[0].content.parts) || [];
+        return parts.filter(p => !p.thought).map(p => p.text || '').join('');
+      }
+      err = new Error(friendlyError(res.status, (j.error && j.error.message) || ''));
+      if (res.status !== 404 && res.status !== 429) break;
+    }
+    throw err;
+  }
   const pending = {}, failed = {};
   const aiKey = h => S.day + ':' + h.id + ':' + (S.promptShift[h.id] || 0);
   const hasAI = () => !!(S.geminiKey || cfg().aiEndpoint);
@@ -98,15 +125,7 @@
     try {
       let q = '';
       if (S.geminiKey) {
-        const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' + MODEL() + ':generateContent', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'x-goog-api-key': S.geminiKey },
-          body: JSON.stringify({ contents: [{ parts: [{ text: coachPrompt(h, prev) }] }] })
-        });
-        const j = await res.json();
-        if (!res.ok) throw new Error((j.error && j.error.message) || ('HTTP ' + res.status));
-        const parts = (j.candidates && j.candidates[0] && j.candidates[0].content && j.candidates[0].content.parts) || [];
-        q = parts.filter(p => !p.thought).map(p => p.text || '').join('');
+        q = await callGemini(coachPrompt(h, prev));
       } else {
         const res = await fetch(cfg().aiEndpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: h.text, book: h.book, note: h.note, prev }) });
         q = (await res.json()).question;

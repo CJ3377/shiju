@@ -3,7 +3,7 @@
 (function () {
   const { S, save, get, ensureDay, todayIds, aiStatus, requestPrompt, hasAI, clearFailed, addReflection, books, hash } = window.Shiju;
   // 顯示在「設定」最下面，用來確認手機跑的是哪一版。改版時和 sw.js 的 VERSION 一起改
-  const APP_VERSION = 'v6';
+  const APP_VERSION = 'v7';
   const $ = s => document.querySelector(s);
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
