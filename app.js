@@ -2,6 +2,8 @@
    按鈕用 data-act 指定動作，統一在最下面的 click 事件處理。 */
 (function () {
   const { S, save, get, ensureDay, todayIds, aiStatus, requestPrompt, hasAI, clearFailed, addReflection, books, hash } = window.Shiju;
+  // 顯示在「設定」最下面，用來確認手機跑的是哪一版。改版時和 sw.js 的 VERSION 一起改
+  const APP_VERSION = 'v6';
   const $ = s => document.querySelector(s);
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
@@ -183,6 +185,7 @@
         <p>資料只存在這支手機的瀏覽器裡。清除 Safari 網站資料會一起刪除，建議偶爾匯出備份。</p>
         <div class="row"><button class="btn" style="flex:1" data-act="export">匯出備份</button><label class="btn soft file-btn" style="flex:1">還原備份<input type="file" data-file="backup"></label></div>
       </div>
+      <p class="small" style="text-align:center;margin:4px 0 0">拾句 ${APP_VERSION}</p>
     </section>`;
   }
 

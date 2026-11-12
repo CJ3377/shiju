@@ -6,9 +6,9 @@
   const KOBO_QUERY = "SELECT b.BookmarkID, b.Text, b.Annotation, b.DateCreated, c.Title, c.Attribution, c.ImageId " +
     "FROM Bookmark b LEFT JOIN content c ON c.ContentID = b.VolumeID " +
     "WHERE b.Text IS NOT NULL AND trim(b.Text) <> '' ORDER BY b.DateCreated";
-  // 已購買的書（有 EntitlementId）；試讀本和 Kobo Plus 書目沒有 EntitlementId，不列入
+  // 真正購買的書：Accessibility = 1。試讀本（6）、Kobo Plus／借閱（9）、書店書目（-1、0）都不列入
   const KOBO_BOOKS = "SELECT Title, Attribution, ImageId FROM content " +
-    "WHERE ContentType = 6 AND ifnull(EntitlementId, '') <> '' AND ifnull(Title, '') <> '' ORDER BY DateLastRead DESC";
+    "WHERE ContentType = 6 AND Accessibility = 1 AND ifnull(Title, '') <> '' ORDER BY DateLastRead DESC";
   // Kobo 書店的封面圖（ImageId 是書店的書籍編號）
   const koboCover = id => /^[0-9a-f-]{36}$/i.test(id || '') ? `https://cdn.kobo.com/book-images/${id}/353/569/90/False/image.jpg` : '';
 
