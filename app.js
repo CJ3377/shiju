@@ -60,10 +60,10 @@
     } else {
       const on = !!S.starred[h.id];
       const st = aiStatus(h);
-      let prompt, loading = false, needKey = false;
+      let prompt, loading = false, needKey = false, why = '';
       if (st.text) prompt = st.text;
       else if (st.state === 'nokey') { prompt = '還沒設定 Gemini 金鑰。到「設定」貼上金鑰，就會依今天的句子出題。'; needKey = true; }
-      else if (st.state === 'error') prompt = '暫時無法出題，按「換一題」再試一次。';
+      else if (st.state === 'error') { prompt = '暫時無法出題，按「換一題」再試一次。'; why = st.msg || ''; }
       else { prompt = '正在依這句話想一個問題…'; loading = true; requestPrompt(h, render); }
       body = `<div class="today-cards">
         <article class="card card-quote" id="quoteCard">
@@ -84,6 +84,7 @@
           <div class="card-body">
             <div class="row"><span class="pill">今日想一想</span><button class="chip-btn" data-act="shuffle" data-arg="${h.id}">${ico(I.refresh, 13)}換一題</button></div>
             <p class="prompt ${loading ? 'loading' : ''}" id="promptText">${esc(prompt)}</p>
+            ${why ? `<p class="small" style="margin:0;opacity:.85;word-break:break-word">原因：${esc(why.slice(0, 160))}</p>` : ''}
           </div>
           <div class="band">${WAVE}<div class="band-row end">${needKey ? '<button class="btn dark" data-act="tab" data-arg="set">去設定金鑰</button>' : '<button class="btn dark" data-act="compose">寫下來</button>'}</div></div>
         </article>
