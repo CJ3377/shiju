@@ -69,7 +69,8 @@ iPhone 上，主畫面的網頁 App 和 Safari 的資料是分開存的。捷徑
 3. 把 `KoboReader.sqlite` 複製到 iCloud 雲碟。
 4. 在 iPhone 的拾句「設定」→「選擇 KoboReader.sqlite」，從「檔案」App 的 iCloud 雲碟選它。
 
-- 匯入的是劃線、你的註記、劃線日期、書名、作者。
+- 匯入的是劃線、你的註記、劃線日期、書名、作者，以及所有已購買的書（還沒劃線的也會出現在書庫）。試讀本和 Kobo Plus 書目不會列入。
+- 在 Kobo 書店買的書，封面直接用 Kobo 的封面圖；其他書到 Open Library 找，找不到用藍灰漸層。
 - 全書內容不會匯入；在 Kobo 書店買的書有加密，也無法讀取全文。
 - 之後有新劃線，重新匯入一次即可，原本的收藏與想法會保留。
 - USB-C 的 iPhone 也可能直接讀到 Kobo，但不保證；用電腦轉一次最穩。
@@ -82,7 +83,7 @@ iPhone 上，主畫面的網頁 App 和 Safari 的資料是分開存的。捷徑
 
 **申請金鑰（免費，約 3 分鐘）**
 1. 用電腦或手機打開 aistudio.google.com，用 Google 帳號登入。
-2. 按「Get API key」→「Create API key」，複製那串文字。
+2. 按左側選單的「API Keys」（或直接打開 aistudio.google.com/apikey），已有金鑰就按旁邊的複製圖示；沒有就按「Create API key」，再複製那串文字。
 3. 在拾句的「設定」→「AI 出題」貼上，回到「今日」就會出題。
 
 **運作方式**
@@ -112,11 +113,12 @@ iPhone 上，主畫面的網頁 App 和 Safari 的資料是分開存的。捷徑
 ```js
 {
   v: 1,                    // 格式版本
-  name: 'Catherine',       // 問候用的名字
+  name: 'Kobo',            // 問候用的名字
   perDay: 3,               // 每天幾則
   hs: [{ id, book, author, date: 'YYYY-MM-DD', text, note, imported }],  // 劃線
   refl: { [劃線id]: [{ date: 'M/D', ts, q: '當時的問題', text }] },     // 想法
   starred: { [劃線id]: true },
+  lib: [{ title, author }], // 從 Kobo 匯入的已購買書籍（含還沒劃線的）
   covers: { [書名]: '封面網址或空字串' },
   geminiKey: '',           // 只存在手機，備份不含
   aiCache: { ['日期:劃線id:換題次數']: '題目' },

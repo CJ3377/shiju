@@ -122,7 +122,7 @@
   function bookList() {
     const q = U.q.b.trim().toLowerCase();
     const hs = S.hs.filter(h => h.book === U.book && (!q || (h.text + h.note + (S.refl[h.id] || []).map(r => r.text).join('')).toLowerCase().includes(q)));
-    if (!hs.length) return '<div class="empty">找不到符合的劃線</div>';
+    if (!hs.length) return `<div class="empty">${q ? '找不到符合的劃線' : '這本書還沒有劃線。<br>在 Kobo 劃線後重新匯入，就會出現在這裡。'}</div>`;
     return hs.map(h => {
       const on = !!S.starred[h.id], rf = S.refl[h.id] || [];
       return `<div class="hl"><p class="text">${esc(h.text)}</p>
@@ -225,7 +225,7 @@
     const k = e.target.dataset.in;
     if (!k) return;
     if (k === 'draft') U.draft = e.target.value;
-    else if (k === 'name') { S.name = e.target.value.trim() || 'Catherine'; save(); }
+    else if (k === 'name') { S.name = e.target.value.trim() || 'Kobo'; save(); }
     else if (k === 'geminiKey') { S.geminiKey = e.target.value.trim(); clearFailed(); save(); const n = $('#keyNote'); if (n) n.textContent = S.geminiKey ? '已設定，今日想一想會依句子出題。' : '尚未設定。'; }
     else {
       U.q[k] = e.target.value;
@@ -241,7 +241,7 @@
       if (kind === 'kobo') {
         U.importMsg = '讀取中…'; render();
         const r = await window.Shiju.importKobo(f);
-        U.importMsg = `已匯入 ${r.count} 則劃線，來自 ${r.books} 本書。`;
+        U.importMsg = `已匯入 ${r.books} 本書、${r.count} 則劃線。`;
         toast('匯入完成，今日精選已更新');
         window.Shiju.fetchCovers(() => { if (U.tab === 'lib' || U.book) render(); });
       } else {
