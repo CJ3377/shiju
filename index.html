@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="拾句">
+<meta name="theme-color" content="#f5f7f9">
+<title>拾句</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="stylesheet" href="styles.css">
+<script>
+  // 今日想一想用 Gemini 出題。一般只要在 App 的「設定」貼上金鑰即可，這裡不用改。
+  // model：要換模型時改這裡。aiEndpoint：改用 ai-worker.js 中繼服務時才填（見 README 第 6 節）。
+  window.SHIJU_CONFIG = { model: 'gemini-flash-latest', aiEndpoint: '' };
+</script>
+</head>
+<body>
+<div class="app">
+  <main id="view" class="view"></main>
+  <div id="overlay" class="overlay" hidden></div>
+  <nav class="tabbar">
+    <button class="tab on" data-act="tab" data-arg="today"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>今日</button>
+    <button class="tab" data-act="tab" data-arg="lib"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="m16 6 4 14M12 6v14M8 8v12M4 4v16"/></svg>書庫</button>
+    <button class="tab" data-act="tab" data-arg="thoughts"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M13.4 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7.4"/><path d="M2 6h4M2 10h4M2 14h4M2 18h4"/><path d="M21.378 5.626a1 1 0 1 0-3.004-3.004l-5.01 5.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z"/></svg>想法</button>
+    <button class="tab" data-act="tab" data-arg="set"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M20 7h-9M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></svg>設定</button>
+  </nav>
+  <div id="toast" class="toast" role="status"></div>
+</div>
+<script src="data.js"></script>
+<script src="state.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
